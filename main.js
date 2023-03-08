@@ -39,6 +39,7 @@ function play(){
         resultArea.textContent = "Down!!!!!";
     }else{
         resultArea.textContent = "Good!!!!!";
+        chancesArea.textContent = `축하.`
     }
 
     if(chances < 1){
@@ -48,6 +49,8 @@ function play(){
     if(gameOver == true){
         playButton.disabled = true;
     }
+
+    
 }
 
 function reset(){
