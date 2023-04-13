@@ -1,90 +1,90 @@
-//랜덤번호 지정                                        - 완료
-//유저가 번호를 입력한다 그리고 go 버튼을 입력한다       - 완료
-//만약에 유저가 랜덤번호를 맞추면, 맞췄습니다.           - 완료
-//랜덤번호가 유저번호보다 작으면 Down                   - 완료
-//랜덤번호가 유저번호보다 크면  Up                      - 완료
-//리셋버튼을 누르면 게임이 리셋된다                      - 완료
-//5회의 기회를 다쓰면 게임이 끝난다(버튼이 disable한다.)  - 완료
-//유저가 1~100범위 밖에 숫자를 입력하면 알려준다, 기회를 깍지 않는다.       - 완료
-//유저가 이미 입력한 숫자를 입력하면, 알려준다 , 기회를 깍지 않는다.        - 완료
+//랜덤 번호가 지정된다.                                     - 완료
+//사용자가 번호를 입력하고 go 버튼을 누른다.                 - 완료
+//번호보다 랜덤번호가 크면 up                               -완료
+//번호보다 랜덤번호가 작으면 down                           -완료
+//번호가 일치하면 정답입니다.                               -완료
+//Go버튼이 disable처리 된다                            -완료
+//chansetext 가 초기화 된다.                           -완료
+//입력횟수 제한은 5로 제한                                  -완료
+//입력횟수를 모두 소진 하면 게임이 끝이 난다                 -완료
+//리셋 버튼 클릭 시 리셋 랜덤번호가 새로 생성되고, 입력횟수 초기화, 화면은 초기 화면으로 이동
+//인풋값 초기화                                            -완료
+//입력횟수 초기화                                          -완료
+// 화면 초기화                                             -완료
+//1~100제한에 외에 숫자를 넣을시 숫자는 차감하지 않고, 잘못입력했다는 메세지를 나오게 함  -완료
+// 정답맞춘후 go버튼 비활성화 시키는데, 초기화 한번하고 다시 했을때 정상을 되어 있어야 함(초기화로직 확인)
+//같은 숫자를 반복 입력 시 반복입력 했다는 메세지 나오게 함     -완료
 
-let computerNum = 0;    //랜덤 번호를 받는 변수
-let playButton = document.getElementById("play-button");    //고 버튼에 아이디를 가져옴ㅋdocument는 html자체를 뜻함
-let userInput = document.getElementById("user-input");      //유저가 입력한 번호를 함수에 담는다(인풋한 숫자)
-let resultArea = document.getElementById("result-area");    //결과값에 표시
-let resetButton = document.getElementById("reset-button");  //리셋버튼 아이디 가져오기
-let chances = 5;
-let gameOver = false;
-let chancesArea = document.getElementById("chances-area");  //남은 기회를 함수에 담는다
-let histrory = []                                           //이전에 시도한 숫자를 확인하기 위해 배열 형식으로 작성
 
-playButton.addEventListener("click", play);
-resetButton.addEventListener("click", reset);
-userInput.addEventListener("focus", function(){
-    userInput.value = "";
-})                                                          // focus이벤트 넣어 마우스로 클릭시 초기화 된다.
+let userinput = document.getElementById("user-input");
+let gobtn = document.getElementById("go-btn");
+let chansetext = document.getElementById("chanse-text");
+let chance = 5;
+let randemnum;
+let resulttext = document.getElementById("result-text");
+let gameover = false;
+let resetbtn = document.getElementById("reset-btn");
+let history = [];
 
-function pickRandomNum() {
-    computerNum = Math.floor(Math.random() * 100 + 1); //Math.floor -> 소수점 뒷자리를 자른다.
+gobtn.addEventListener("click", play);
+userinput.addEventListener("focus", function () {
+    userinput.value = "";
+});
+resetbtn.addEventListener("click", reset);
 
-    console.log(`정답`, computerNum);
-}
 
 function play() {
-    let uservalue = userInput.value;
-    console.log(uservalue);
-    
-    if (uservalue < 0 || uservalue > 100 || uservalue == "") {
-        resultArea.textContent = '1과 100사이에 숫자를 입력해 주세요';
+    let uservalue = userinput.value;
+
+    if (uservalue < 1 || uservalue > 100) {
+        resulttext.textContent = "잘못된 입력값 입니다.";
         return;
     }
-    if(histrory.includes(uservalue)){                           //.includes가 포함되어 있는지를 확인
-        resultArea.textContent = "이미 입력한 숫자입니다.";
+    if (history.includes(uservalue)) {
+        resulttext.textContent = "이전 입력한 숫자입니다."
         return;
     }
 
-
-    chances--;
-    chancesArea.textContent = `남은기회:${chances}번`;
-
-    if (uservalue < computerNum) {
-        resultArea.textContent = "UP!!!!!";
-
-    } else if (uservalue > computerNum) {
-        resultArea.textContent = "Down!!!!!";
+    chance--;
+    chansetext.textContent = `남은기회:${chance}번`;
+    if (uservalue < randemnum) {
+        resulttext.textContent = "UP!";
+    } else if (uservalue > randemnum) {
+        resulttext.textContent = "Down!";
     } else {
-        resultArea.textContent = "정답!";
-        chancesArea.textContent = "";
-        gameOver = true;
-
+        resulttext.textContent = "정답입니다.";
+        chansetext.textContent = "";
+    // gameover = true;
     }
-    
-    histrory.push(uservalue);                           //history에 이전 입력 값을 넣어 준다.
-    console.log(histrory);
+    history.push(userinput.value);
+    //console.log(history);
 
-
-    if (chances < 1) {
-        gameOver = true;
+    if (chance < 1) {
+        gameover = true;
     }
-
-    if (gameOver == true) {
-        playButton.disabled = true;
+    if (gameover == true) {
+        gobtn.disabled = true;
     }
+    // else{
+    //     gobtn.disabled = false;
+    // }
+
 
 
 }
-
 function reset() {
-    //user 인풋창이 깨끗이 정리 되어야함
-    userInput.value = "";   //빈값을 넣어준다
-    pickRandomNum();        //새로운 랜덤값을 부여한다.
-    resultArea.textContent = "";
-    playButton.disabled = false;
-    chances = 5; //찬스초기화
-    chancesArea.textContent = `남은기회:${chances}번`;
-    //새로운 번호가 랜덤 번호를 생성한다.
-
+    userinput.value = "";
+    randemNum();
+    //gobtn.disabled = false;
+    chance = 5;
+    resulttext.textContent = "1부터 100까지의 숫자를 입력해 주세요";
+    chansetext.textContent = `남은기회:${chance}번`;
 }
 
+function randemNum() {
+    randemnum = Math.floor((Math.random() * 100) + 1);
+    console.log('정답', randemnum);
+    return randemnum;
+}
 
-pickRandomNum()
+randemNum()
